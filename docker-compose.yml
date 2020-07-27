@@ -1,0 +1,14 @@
+version: '3'
+services:
+  fluentd:
+    build: .
+    command: fluentd -c localstack.conf
+  flunetd.localstack:
+    image: localstack/localstack:0.11.3
+    ports:
+      - "4566:4566"
+    environment:
+      DEBUG: "true"
+      SERVICES: "s3"
+    volumes:
+      - "./scripts/localstack:/docker-entrypoint-initaws.d"
