@@ -1,4 +1,6 @@
 require 'arrow'
+require 'json'
+require 'fluent/event'
 require 'fluent/msgpack_factory'
 
 module Fluent::Plugin
@@ -20,10 +22,9 @@ module Fluent::Plugin
 
       def compress(chunk, tmp)
         schema = ::Arrow::Schema.new([{"name" => "hello", "type" => "string"}])
-        # Unpack chunk as msgpack
-        pac = ::Fluent::MessagePackFactory.unpacker.feed(chunk)
         # Create Arrow Batch
-        record_batch = ::Arrow::RecordBatch.new(schema, pac)
+        msg = chunk.read.split(/\s+/).map {|val| JSON.parse(val)}
+        record_batch = ::Arrow::RecordBatch.new(schema, msg)
         # Save to file
         record_batch.to_table.save(tmp,
           format: :arrow,
