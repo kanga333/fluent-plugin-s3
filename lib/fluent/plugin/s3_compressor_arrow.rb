@@ -1,4 +1,5 @@
 require 'arrow'
+require 'parquet'
 require 'json'
 require 'fluent/event'
 require 'fluent/msgpack_factory'
@@ -27,7 +28,7 @@ module Fluent::Plugin
         record_batch = ::Arrow::RecordBatch.new(schema, msg)
         # Save to file
         record_batch.to_table.save(tmp,
-          format: :arrow,
+          format: :parquet,
           chunk_size: 1024)
       end
     end
