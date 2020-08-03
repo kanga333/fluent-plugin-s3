@@ -10,12 +10,14 @@ module Fluent::Plugin
     class ArrowCompressor < Compressor
       S3Output.register_compressor('arrow', self)
 
+      config_param :format, :string, default: 'parquet'
+
       def configure(conf)
         super
       end
 
       def ext
-        'arrow'.freeze
+        @format.freeze
       end
 
       def content_type
@@ -30,7 +32,7 @@ module Fluent::Plugin
         record_batch = ::Arrow::RecordBatch.new(schema, pac.each.to_a)
         # Save to file
         record_batch.to_table.save(tmp,
-          format: :parquet,
+          format: @format,
           chunk_size: 1024)
       end
     end
