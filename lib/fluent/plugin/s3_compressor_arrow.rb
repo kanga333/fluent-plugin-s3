@@ -25,7 +25,10 @@ module Fluent::Plugin
       end
 
       def compress(chunk, tmp)
-        schema = ::Arrow::Schema.new([{"name" => "hello", "type" => "string"}])
+        schema = ::Arrow::Schema.new([
+          {"name" => "hello", "type" => "string"},
+          {"name" => "empty", "type" => "int64"}
+        ])
 
         # Create Arrow Batch
         pac = ::Fluent::MessagePackFactory.unpacker.feed(chunk.read)
